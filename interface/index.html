@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <style>
+      body,
+      h1,
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        width: 95vw;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-size: 16px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      input[type="text"] {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #0096db;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0070a8;
+      }
+
+      .result {
+        font-size: 18px;
+        margin-top: 20px;
+      }
+
+      a {
+        text-decoration: none;
+        color: #0096db;
+        font-weight: bold;
+        padding-bottom: 5px;
+      }
+
+      a:hover {
+        color: #0070a8;
+      }
+
+      @media screen and (min-width: 580px) {
+        .container {
+          width: 45vw;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener</h1>
+      <form id="shorten-form">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" placeholder="https://example.com" />
+        <button type="submit">Shorten</button>
+      </form>
+      <div class="result" id="result" style="display: none">
+        <div>
+          Original URL:
+          <a id="original-url" href="" target="_blank"></a>
+        </div>
+        <div>
+          Shortened URL:
+          <a id="short-url" href="" target="_blank"></a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("shorten-form");
+      const resultDiv = document.getElementById("result");
+      const shortUrlAnchor = document.getElementById("short-url");
+      const originalUrlAnchor = document.getElementById("original-url");
+
+      
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const inputUrl = document.getElementById("url").value;
+
+        // Perform your POST request to shorten the URL here
+        // Replace this with your actual API call
+        const response = await fetch("/url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url: inputUrl }),
+        });
+            console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+
+          document.getElementById("url").value = "";
+          const shortUrl = `${window.location.origin}/url/${data.id}`;
+          shortUrlAnchor.href = shortUrl;
+          shortUrlAnchor.textContent = shortUrl;
+          originalUrlAnchor.href = inputUrl;
+          originalUrlAnchor.textContent = inputUrl;
+          resultDiv.style.display = "block";
+        } else {
+          alert("Error occurred. Please try again.");
+        }
+      });
+    </script>
+  </body>
+</html>
